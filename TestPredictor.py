@@ -68,3 +68,4 @@ test_y_ = regr.predict(test_x)
 print("Mean absolute error: %.2f" % np.mean(np.absolute(test_y_ - test_y)))
 print("Mean sum of squares (MSE): %.2f" % np.mean((test_y_ - test_y) ** 2))
 print("R2-score: %.2f" % r2_score(test_y_, test_y))
+
