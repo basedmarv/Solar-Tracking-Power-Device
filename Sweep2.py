@@ -11,18 +11,24 @@ OFFSE_DUTY = 0.5        #define pulse offset of servo
 SERVO_MIN_DUTY = 2.5+OFFSE_DUTY     #define pulse duty cycle for minimum angle of servo
 SERVO_MAX_DUTY = 12.5+OFFSE_DUTY    #define pulse duty cycle for maximum angle of servo
 servoPin = 4
+servoPin2 = 15
 
 def map( value, fromLow, fromHigh, toLow, toHigh):  # map a value from one range to another range
     return (toHigh-toLow)*(value-fromLow) / (fromHigh-fromLow) + toLow
 
 def setup():
     global p
+    global q
     GPIO.setmode(GPIO.BCM)         # use PHYSICAL GPIO Numbering
     GPIO.setup(servoPin, GPIO.OUT)   # Set servoPin to OUTPUT mode
     GPIO.output(servoPin, GPIO.LOW)  # Make servoPin output LOW level
+    GPIO.setup(servoPin2, GPIO.OUT)   # Set servoPin to OUTPUT mode
+    GPIO.output(servoPin2, GPIO.LOW)
 
     p = GPIO.PWM(servoPin, 50)     # set Frequece to 50Hz
     p.start(0)                     # Set initial Duty Cycle to 0
+    q = GPIO.PWM(servoPin2, 50)
+    q.start(0)
     
 def servoWrite(angle):      # make the servo rotate to specific angle, 0-180 
     if(angle<0):
@@ -30,6 +36,7 @@ def servoWrite(angle):      # make the servo rotate to specific angle, 0-180
     elif(angle > 180):
         angle = 180
     p.ChangeDutyCycle(map(angle,0,180,SERVO_MIN_DUTY,SERVO_MAX_DUTY)) # map the angle to duty cycle and output it
+    q.ChangeDutyCycle(map(angle,0,180,SERVO_MIN_DUTY,SERVO_MAX_DUTY))
     
 def loop():
     while True:
@@ -44,6 +51,7 @@ def loop():
 
 def destroy():
     p.stop()
+    q.stop()
     GPIO.cleanup()
 
 if __name__ == '__main__':     # Program entrance

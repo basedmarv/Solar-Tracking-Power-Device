@@ -26,15 +26,15 @@ def createModel(angle):
     regr.fit(train_x, train_y)
     
     # The slope and intercept:
-    print("slope:", regr.coef_[0][0])
-    print("intercept:", regr.intercept_[0])
+    print("slope: %.2f" % regr.coef_[0][0])
+    print("intercept: %.2f" % regr.intercept_[0])
     
     # Plotting the regression line:
-    plt.scatter(data["Time"], data[angle], color = "blue")
-    plt.plot(train_x, regr.coef_ * train_x + regr.intercept_, '-r')
-    plt.xlabel("Time")
-    plt.ylabel(angle)
-    plt.show()
+#    plt.scatter(data["Time"], data[angle], color = "blue")
+#    plt.plot(train_x, regr.coef_ * train_x + regr.intercept_, '-r')
+#    plt.xlabel("Time")
+#    plt.ylabel(angle)
+#    plt.show()
     
     # Checking various accuracy:
     actual_test_x = np.array(test[['Time']])
@@ -53,11 +53,11 @@ def getEstimatedAngle(slope, intercept):
     currentTime = getCurrentTime.strftime("%H:%M:%S")
     print("Current time:", currentTime)
     (hour, minute, second) = currentTime.split(':')
-    currentTimeDecimal = int(hour) + (int(minute)/60) + (int(second)/3600)
-    print("Current time as decimal:", currentTimeDecimal)
+    currentTimeDecimal = float(hour) + (float(minute)/60) + (float(second)/3600)
+    print("Current time as decimal: %.2f" % currentTimeDecimal)
     
     estimatedAngle = currentTimeDecimal * slope[0][0] + intercept[0]
-    print("Estimated angle:", estimatedAngle)
+    print("Estimated angle: %.2f" % estimatedAngle)
     
     return estimatedAngle
 
