@@ -54,10 +54,10 @@ def servoVWrite(angle):      # make the servo rotate to specific angle
 def loop():
     while True:
         adc = MCP3008()
-        read1 = adc.read(channel = 0)
-        read2 = adc.read(channel = 1)
-        read3 = adc.read(channel = 2)
-        read4 = adc.read(channel = 3)
+        read1 = adc.read(channel = photoResistor1)
+        read2 = adc.read(channel = photoResistor2)
+        read3 = adc.read(channel = photoResistor3)
+        read4 = adc.read(channel = photoResistor4)
         
         average12 = (read1 + read2) / 2
         average34 = (read3 + read4) / 2
