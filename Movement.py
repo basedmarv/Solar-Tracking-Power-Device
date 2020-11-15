@@ -64,27 +64,27 @@ def loop():
         average14 = (read1 + read4) / 2
         average23 = (read2 + read3) / 2
         
-        if(average12 > average34)
+        if(average12 > average34):
             servoVWrite(servoVAngle + 1)
             servoVAngle = servoVAngle + 1
             time.sleep(0.01)
-        elif(average12 < average34)
+        elif(average12 < average34):
             servoVWrite(servoVAngle - 1)
             servoVAngle = servoVAngle - 1
             time.sleep(0.01)
-        else
+        else:
             servoVWrite(servoVAngle)
             time.sleep(0.01)
             
-        if(average14 > average23)
+        if(average14 > average23):
             servoHWrite(servoHAngle + 1)
             servoHAngle = servoHAngle + 1
             time.sleep(0.01)
-        elif(average14 < average23)
+        elif(average14 < average23):
             servoHWrite(servoHAngle - 1)
             servoHAngle = servoHAngle - 1
             time.sleep(0.01)
-        else
+        else:
             servoVWrite(servoVAngle)
             time.sleep(0.01)
             
