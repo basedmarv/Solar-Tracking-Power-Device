@@ -11,7 +11,7 @@ OFFSE_DUTY = 0.5        #define pulse offset of servo
 SERVO_MIN_DUTY = 2.5+OFFSE_DUTY     #define pulse duty cycle for minimum angle of servo
 SERVO_MAX_DUTY = 12.5+OFFSE_DUTY    #define pulse duty cycle for maximum angle of servo
 servoPin = 4
-servoPin2 = 15
+servoPin2 = 17
 
 def map( value, fromLow, fromHigh, toLow, toHigh):  # map a value from one range to another range
     return (toHigh-toLow)*(value-fromLow) / (fromHigh-fromLow) + toLow

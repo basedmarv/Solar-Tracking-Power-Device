@@ -6,19 +6,17 @@ OFFSE_DUTY = 0.5        #define pulse offset of servo
 SERVO_MIN_DUTY = 2.5+OFFSE_DUTY     #define pulse duty cycle for minimum angle of servo
 SERVO_MAX_DUTY = 12.5+OFFSE_DUTY    #define pulse duty cycle for maximum angle of servo
 
-servoHPin = 4
-servoVPin = 15
+servoHPin = 17  #GPIO17 
+servoVPin = 21   #GPI21
 
 servoHAngle = 0
 servoVAngle = 0
-
 servoHigh = 180
 servoLow = 0
-
-photoResistor1 = 0
-photoResistor2 = 1
-photoResistor3 = 2
-photoResistor4 = 3
+photoResistor1 = 0 #top left
+photoResistor2 = 1 #top right
+photoResistor3 = 2 #bottom right
+photoResistor4 = 3 #bottom left 
 
 def map( value, fromLow, fromHigh, toLow, toHigh):  # map a value from one range to another range
     return (toHigh-toLow)*(value-fromLow) / (fromHigh-fromLow) + toLow
@@ -26,6 +24,14 @@ def map( value, fromLow, fromHigh, toLow, toHigh):  # map a value from one range
 def setup():
     global servoH
     global servoV
+    #global servoHAngle 
+    #global servoVAngle 
+    global servoHigh 
+    global servoLow
+    #global photoResistor1 
+    #global photoResistor2 
+    #global photoResistor3 
+    #global photoResistor4 
     GPIO.setmode(GPIO.BCM)         # use PHYSICAL GPIO Numbering
     GPIO.setup(servoHPin, GPIO.OUT)   # Set servoPin to OUTPUT mode
     GPIO.output(servoHPin, GPIO.LOW)  # Make servoPin output LOW level
@@ -52,23 +58,29 @@ def servoVWrite(angle):      # make the servo rotate to specific angle
     servoV.ChangeDutyCycle(map(angle,servoLow,servoHigh,SERVO_MIN_DUTY,SERVO_MAX_DUTY)) # map the angle to duty cycle and output it
 
 def loop():
+    global servoHAngle 
+    global servoVAngle 
+    global photoResistor1 
+    global photoResistor2 
+    global photoResistor3 
+    global photoResistor4 
     while True:
         adc = MCP3008()
-        read1 = adc.read(channel = photoResistor1)
-        read2 = adc.read(channel = photoResistor2)
-        read3 = adc.read(channel = photoResistor3)
-        read4 = adc.read(channel = photoResistor4)
+        read1 = adc.read1(channel = 0) #channel 0
+        read2 = adc.read2(channel = 1) #channel 1
+        read3 = adc.read3(channel = 2) #channel 2
+        read4 = adc.read4(channel = 3) #channel 3
         
         average12 = (read1 + read2) / 2
         average34 = (read3 + read4) / 2
         average14 = (read1 + read4) / 2
         average23 = (read2 + read3) / 2
         
-        if(average12 > average34):
+        if(average12 < average34):
             servoVWrite(servoVAngle + 1)
             servoVAngle = servoVAngle + 1
             time.sleep(0.01)
-        elif(average12 < average34):
+        elif(average12 > average34):
             servoVWrite(servoVAngle - 1)
             servoVAngle = servoVAngle - 1
             time.sleep(0.01)
