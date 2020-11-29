@@ -11,7 +11,7 @@ servoVPin = 21   #GPI21
 
 servoHAngle = 0
 servoVAngle = 0
-servoHigh = 180
+servoHigh = 180 #50 is the adjusted angle
 servoLow = 0
 photoResistor1 = 0 #top left
 photoResistor2 = 1 #top right
@@ -24,14 +24,8 @@ def map( value, fromLow, fromHigh, toLow, toHigh):  # map a value from one range
 def setup():
     global servoH
     global servoV
-    #global servoHAngle 
-    #global servoVAngle 
-    global servoHigh 
-    global servoLow
-    #global photoResistor1 
-    #global photoResistor2 
-    #global photoResistor3 
-    #global photoResistor4 
+    #global servoHigh 
+    #global servoLow
     GPIO.setmode(GPIO.BCM)         # use PHYSICAL GPIO Numbering
     GPIO.setup(servoHPin, GPIO.OUT)   # Set servoPin to OUTPUT mode
     GPIO.output(servoHPin, GPIO.LOW)  # Make servoPin output LOW level
@@ -64,6 +58,8 @@ def loop():
     global photoResistor2 
     global photoResistor3 
     global photoResistor4 
+    global servoHigh 
+    global servoLow
     while True:
         adc = MCP3008()
         read1 = adc.read1(channel = 0) #channel 0
@@ -77,29 +73,44 @@ def loop():
         average23 = (read2 + read3) / 2
         
         if(average12 < average34):
-            servoVWrite(servoVAngle + 1)
-            servoVAngle = servoVAngle + 1
-            time.sleep(0.01)
+          if(servoVAngle < servoHigh):
+               servoVWrite(servoVAngle + 1)
+               servoVAngle = servoVAngle + 1
+          else:               
+               servoVAngle = servoHigh
+          time.sleep(0.01)
         elif(average12 > average34):
-            servoVWrite(servoVAngle - 1)
-            servoVAngle = servoVAngle - 1
-            time.sleep(0.01)
+          if(servoVAngle > servoLow):
+               servoVWrite(servoVAngle - 1)
+               servoVAngle = servoVAngle - 1
+          else:
+               servoVAngle = servoLow
+          time.sleep(0.01)
         else:
             servoVWrite(servoVAngle)
             time.sleep(0.01)
             
         if(average14 > average23):
-            servoHWrite(servoHAngle + 1)
-            servoHAngle = servoHAngle + 1
-            time.sleep(0.01)
+          if(servoHAngle < servoHigh):
+               servoHWrite(servoHAngle + 1)
+               servoHAngle = servoHAngle + 1
+          else:
+               servoHAngle = servoHigh
+          time.sleep(0.01)
         elif(average14 < average23):
-            servoHWrite(servoHAngle - 1)
-            servoHAngle = servoHAngle - 1
-            time.sleep(0.01)
+          if(servoHAngle > servoLow):
+               servoHWrite(servoHAngle - 1)
+               servoHAngle = servoHAngle - 1
+          else:
+               servoHAngle = servoLow
+          time.sleep(0.01)
         else:
             servoVWrite(servoVAngle)
             time.sleep(0.01)
-            
+        
+        #print('ServoH: ', servoHAngle)
+        print('ServoV: ', servoVAngle)
+    
         time.sleep(0.05)
     
 def destroy():
