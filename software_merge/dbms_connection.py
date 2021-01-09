@@ -1,7 +1,7 @@
 import mariadb
-import psycopg2 as db
 import sys
 import os
+import csv
 
 from dotenv import load_dotenv, find_dotenv
 
@@ -9,11 +9,17 @@ load_dotenv(find_dotenv())
 
 def connect(): 
     try:
+        print(f'user: {os.environ.get("USER")}')
+        print(f'password: {os.environ.get("PASSWORD")}')
+        print(f'host: {os.environ.get("HOST")}')
+        
+
         conn = mariadb.connect(
-            user = os.environ.get("USER"),
+            # user = os.environ.get("USER"),
+            user = "roy",
             password = os.environ.get("PASSWORD"),
             host = os.environ.get("HOST"),
-            port= os.environ.get("PORT"),
+            port= int(os.environ.get("PORT")),
             database= os.environ.get("DATABASE")
         )
         

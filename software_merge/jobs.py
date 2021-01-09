@@ -15,8 +15,8 @@ SERVO_MAX_DUTY = 12.5+OFFSE_DUTY    #define pulse duty cycle for maximum angle o
 servoHPin = 17  #GPIO17 
 servoVPin = 21   #GPI21
 
-servoHAngle = 0
-servoVAngle = 0
+servoHAngle = 90
+servoVAngle = 90
 servoHigh = 180 #50 is the adjusted angle
 servoLow = 0
 photoResistor1 = 0 #top left
@@ -79,62 +79,63 @@ def move_panel():
     global servoHigh 
     global servoLow
 
-    while True:
+    # while True:
 
-        adc_readings = read_photoresistor()
+    adc_readings = read_photoresistor()
 
-        print(adc_readings)
+    print(adc_readings)
 
-        average12 = (adc_readings[0] + adc_readings[1]) / 2
-        average34 = (adc_readings[2] + adc_readings[3]) / 2
-        average14 = (adc_readings[0] + adc_readings[3]) / 2
-        average23 = (adc_readings[1] + adc_readings[2]) / 2
+    average12 = (adc_readings[0] + adc_readings[1]) / 2
+    average34 = (adc_readings[2] + adc_readings[3]) / 2
+    average14 = (adc_readings[0] + adc_readings[3]) / 2
+    average23 = (adc_readings[1] + adc_readings[2]) / 2
 
-        
-        if(average12 < average34):
-            if(servoVAngle < servoHigh):
-                servoVWrite(servoVAngle + 1)
-                servoVAngle = servoVAngle + 1
-            else:               
-                servoVAngle = servoHigh
+    
+    if(average12 < average34):
+        if(servoVAngle < servoHigh):
+            servoVWrite(servoVAngle + 1)
+            servoVAngle = servoVAngle + 1
             print(f'1st: {servoVAngle}')
-            time.sleep(0.01)
-        elif(average12 > average34):
-            if(servoVAngle > servoLow):
-                servoVWrite(servoVAngle - 1)
-                servoVAngle = servoVAngle - 1
-            else:
-                servoVAngle = servoLow
+        else:               
+            servoVAngle = servoHigh
+        time.sleep(0.01)
+    elif(average12 > average34):
+        if(servoVAngle > servoLow):
+            servoVWrite(servoVAngle - 1)
+            servoVAngle = servoVAngle - 1
             print(f'2nd: {servoVAngle}')
-            time.sleep(0.01)
         else:
-            servoVWrite(servoVAngle)
-            print(f'1st else: {servoVAngle}')
-            time.sleep(0.01)
-            
-        if(average14 > average23):
-            if(servoHAngle < servoHigh):
-                servoHWrite(servoHAngle + 1)
-                servoHAngle = servoHAngle + 1
-            else:
-                servoHAngle = servoHigh
-            print(f'3rd: {servoVAngle}')
-            time.sleep(0.01)
-        elif(average14 < average23):
-            if(servoHAngle > servoLow):
-                servoHWrite(servoHAngle - 1)
-                servoHAngle = servoHAngle - 1
-            else:
-                servoHAngle = servoLow
-            print(f'4th: {servoVAngle}')
-            time.sleep(0.01)
-        else:
-            print(f'2nd else: {servoVAngle}')
-            servoVWrite(servoVAngle)
-            time.sleep(0.01)
+            servoVAngle = servoLow
         
-        #print('ServoH: ', servoHAngle)
-        print('ServoV: ', servoVAngle)
+        time.sleep(0.01)
+    else:
+        servoVWrite(servoVAngle)
+        print(f'1st else: {servoVAngle}')
+        time.sleep(0.01)
+        
+    if(average14 > average23):
+        if(servoHAngle < servoHigh):
+            servoHWrite(servoHAngle + 1)
+            servoHAngle = servoHAngle + 1
+        else:
+            servoHAngle = servoHigh
+        print(f'3rd: {servoVAngle}')
+        time.sleep(0.01)
+    elif(average14 < average23):
+        if(servoHAngle > servoLow):
+            servoHWrite(servoHAngle - 1)
+            servoHAngle = servoHAngle - 1
+        else:
+            servoHAngle = servoLow
+        print(f'4th: {servoVAngle}')
+        time.sleep(0.01)
+    else:
+        print(f'2nd else: {servoVAngle}')
+        servoVWrite(servoVAngle)
+        time.sleep(0.01)
+    
+    #print('ServoH: ', servoHAngle)
+    print('ServoV: ', servoVAngle)
 
 
 
@@ -153,7 +154,7 @@ def run_sheduled_jobs():
         time.sleep(1)
 
 def movement_schedule():
-    schedule.every(0.001).seconds.do(move_panel)
+    schedule.every(1).seconds.do(adjust_servo)
     run_sheduled_jobs()
 
 def run_jobs():
