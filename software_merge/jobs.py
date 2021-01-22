@@ -1,12 +1,13 @@
 # pip install schedule
 import schedule # necessary for scheduling 
 # documentation: https://schedule.readthedocs.io/en/stable/api.html
-import time
+import time, traceback
 from MCP3008 import MCP3008
 # from Movement import *
 from multiprocessing import *
 import RPi.GPIO as GPIO
-
+import threading
+from dbms_connection import *
 
 OFFSE_DUTY = 0.5        #define pulse offset of servo
 SERVO_MIN_DUTY = 2.5+OFFSE_DUTY     #define pulse duty cycle for minimum angle of servo
@@ -83,8 +84,6 @@ def move_panel():
 
     adc_readings = read_photoresistor()
 
-    print(adc_readings)
-
     average12 = (adc_readings[0] + adc_readings[1]) / 2
     average34 = (adc_readings[2] + adc_readings[3]) / 2
     average14 = (adc_readings[0] + adc_readings[3]) / 2
@@ -95,7 +94,6 @@ def move_panel():
         if(servoVAngle < servoHigh):
             servoVWrite(servoVAngle + 1)
             servoVAngle = servoVAngle + 1
-            print(f'1st: {servoVAngle}')
         else:               
             servoVAngle = servoHigh
         time.sleep(0.01)
@@ -103,14 +101,12 @@ def move_panel():
         if(servoVAngle > servoLow):
             servoVWrite(servoVAngle - 1)
             servoVAngle = servoVAngle - 1
-            print(f'2nd: {servoVAngle}')
         else:
             servoVAngle = servoLow
         
         time.sleep(0.01)
     else:
         servoVWrite(servoVAngle)
-        print(f'1st else: {servoVAngle}')
         time.sleep(0.01)
         
     if(average14 > average23):
@@ -119,7 +115,6 @@ def move_panel():
             servoHAngle = servoHAngle + 1
         else:
             servoHAngle = servoHigh
-        print(f'3rd: {servoVAngle}')
         time.sleep(0.01)
     elif(average14 < average23):
         if(servoHAngle > servoLow):
@@ -127,16 +122,35 @@ def move_panel():
             servoHAngle = servoHAngle - 1
         else:
             servoHAngle = servoLow
-        print(f'4th: {servoVAngle}')
         time.sleep(0.01)
     else:
-        print(f'2nd else: {servoVAngle}')
         servoVWrite(servoVAngle)
         time.sleep(0.01)
     
-    #print('ServoH: ', servoHAngle)
-    print('ServoV: ', servoVAngle)
 
+def every(delay, task):
+  next_time = time.time() + delay
+  while True:
+    time.sleep(max(0, next_time - time.time()))
+    try:
+      task()
+    except Exception:
+      traceback.print_exc()
+      # in production code you might want to have this instead of course:
+      # logger.exception("Problem while executing repetitive task.")
+    # skip tasks if we are behind schedule:
+    next_time += (time.time() - next_time) // delay * delay + delay
+
+
+
+
+def run_jobs():
+    setup()
+    threading.Thread(target=lambda: every(3600,move_panel)).start()
+    threading.Thread(target=every(1800,insert_data)).start()
+    # movement_proc = Process(target = movement_schedule)
+    # movement_proc.start()
+    # movement_proc.join()
 
 
 # scheduling templates for later
@@ -148,25 +162,15 @@ def move_panel():
 # schedule.every().wednesday.at("13:15").do(job)
 # schedule.every().minute.at(":17").do(job)
 
-def run_sheduled_jobs():
-    while True:
-        schedule.run_pending() # runs the jobs that are scheduled, does not run missed tasks 
-        time.sleep(1)
+# def run_sheduled_jobs():
+#     while True:
+#         schedule.run_pending() # runs the jobs that are scheduled, does not run missed tasks 
+#         time.sleep(1)
 
-def movement_schedule():
-    schedule.every(1).seconds.do(adjust_servo)
-    run_sheduled_jobs()
+# def movement_schedule():
+#     schedule.every(1).seconds.do(adjust_servo)
+#     run_sheduled_jobs()
 
-def run_jobs():
-    setup()
-    movement_proc = Process(target = movement_schedule)
-    movement_proc.start()
-    movement_proc.join()
-
-# developer notes: 
-# need to make sure script can run in parallel 
-# test for which time zone is scheduled (also consider Daylight Saving)
-
-if __name__ == '__main__':
-    setup()
-    move_panel()
+# if __name__ == '__main__':
+#     setup()
+#     move_panel()

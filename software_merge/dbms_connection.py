@@ -28,3 +28,8 @@ def connect():
         print(f'Error connecting to MariaDB Platform: {e}')
         sys.exit(1)
 
+def insert_data(time, position):
+    connection = connect()
+    cur = connection.cursor()
+
+    cur.execute(f'INSERT INTO TandP(time,position)  VALUES ({time}, {position});')
