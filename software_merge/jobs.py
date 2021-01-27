@@ -13,6 +13,8 @@ OFFSE_DUTY = 0.5        #define pulse offset of servo
 SERVO_MIN_DUTY = 2.5+OFFSE_DUTY     #define pulse duty cycle for minimum angle of servo
 SERVO_MAX_DUTY = 12.5+OFFSE_DUTY    #define pulse duty cycle for maximum angle of servo
 
+adc = MCP3008()
+
 servoHPin = 17  #GPIO17 
 servoVPin = 21   #GPI21
 
@@ -62,7 +64,7 @@ def adjust_servo():
     print("Servo Angle Adjustment...")
 
 def read_photoresistor():
-    adc = MCP3008()
+    global adc
     read1 = adc.read1(channel = 0) #channel 0
     read2 = adc.read2(channel = 1) #channel 1
     read3 = adc.read3(channel = 2) #channel 2
@@ -81,7 +83,7 @@ def move_panel():
     global servoLow
 
     # while True:
-    t_end = time.time() + 60
+    t_end = time.time() + 10
     print("Tracking in progress....")
     while time.time() < t_end: 
         adc_readings = read_photoresistor()
@@ -128,7 +130,7 @@ def move_panel():
         else:
             servoVWrite(servoVAngle)
             time.sleep(0.01)
-    print(f'Tracking finished.\nNew servoHAngle: {servoHAngle}')
+    print(f'Tracking finished.\nNew servoVAngle: {servoVAngle}')
     
 
 def every(delay, task):
@@ -149,8 +151,10 @@ def every(delay, task):
 
 def run_jobs():
     setup()
-    threading.Thread(target=lambda: every(3600,move_panel)).start()
-    threading.Thread(target=every(1800,insert_data)).start()
+    print("before thread")
+    threading.Thread(target=lambda: every(30,move_panel)).start()
+    print("after thread")    
+    #threading.Thread(target=every(1800,insert_data)).start()
     # movement_proc = Process(target = movement_schedule)
     # movement_proc.start()
     # movement_proc.join()
