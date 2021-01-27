@@ -81,51 +81,54 @@ def move_panel():
     global servoLow
 
     # while True:
+    t_end = time.time() + 60
+    print("Tracking in progress....")
+    while time.time() < t_end: 
+        adc_readings = read_photoresistor()
 
-    adc_readings = read_photoresistor()
+        average12 = (adc_readings[0] + adc_readings[1]) / 2
+        average34 = (adc_readings[2] + adc_readings[3]) / 2
+        average14 = (adc_readings[0] + adc_readings[3]) / 2
+        average23 = (adc_readings[1] + adc_readings[2]) / 2
 
-    average12 = (adc_readings[0] + adc_readings[1]) / 2
-    average34 = (adc_readings[2] + adc_readings[3]) / 2
-    average14 = (adc_readings[0] + adc_readings[3]) / 2
-    average23 = (adc_readings[1] + adc_readings[2]) / 2
-
-    
-    if(average12 < average34):
-        if(servoVAngle < servoHigh):
-            servoVWrite(servoVAngle + 1)
-            servoVAngle = servoVAngle + 1
-        else:               
-            servoVAngle = servoHigh
-        time.sleep(0.01)
-    elif(average12 > average34):
-        if(servoVAngle > servoLow):
-            servoVWrite(servoVAngle - 1)
-            servoVAngle = servoVAngle - 1
-        else:
-            servoVAngle = servoLow
         
-        time.sleep(0.01)
-    else:
-        servoVWrite(servoVAngle)
-        time.sleep(0.01)
-        
-    if(average14 > average23):
-        if(servoHAngle < servoHigh):
-            servoHWrite(servoHAngle + 1)
-            servoHAngle = servoHAngle + 1
+        if(average12 < average34):
+            if(servoVAngle < servoHigh):
+                servoVWrite(servoVAngle + 1)
+                servoVAngle = servoVAngle + 1
+            else:               
+                servoVAngle = servoHigh
+            time.sleep(0.01)
+        elif(average12 > average34):
+            if(servoVAngle > servoLow):
+                servoVWrite(servoVAngle - 1)
+                servoVAngle = servoVAngle - 1
+            else:
+                servoVAngle = servoLow
+            
+            time.sleep(0.01)
         else:
-            servoHAngle = servoHigh
-        time.sleep(0.01)
-    elif(average14 < average23):
-        if(servoHAngle > servoLow):
-            servoHWrite(servoHAngle - 1)
-            servoHAngle = servoHAngle - 1
+            servoVWrite(servoVAngle)
+            time.sleep(0.01)
+            
+        if(average14 > average23):
+            if(servoHAngle < servoHigh):
+                servoHWrite(servoHAngle + 1)
+                servoHAngle = servoHAngle + 1
+            else:
+                servoHAngle = servoHigh
+            time.sleep(0.01)
+        elif(average14 < average23):
+            if(servoHAngle > servoLow):
+                servoHWrite(servoHAngle - 1)
+                servoHAngle = servoHAngle - 1
+            else:
+                servoHAngle = servoLow
+            time.sleep(0.01)
         else:
-            servoHAngle = servoLow
-        time.sleep(0.01)
-    else:
-        servoVWrite(servoVAngle)
-        time.sleep(0.01)
+            servoVWrite(servoVAngle)
+            time.sleep(0.01)
+    print(f'Tracking finished.\nNew servoHAngle: {servoHAngle}')
     
 
 def every(delay, task):
