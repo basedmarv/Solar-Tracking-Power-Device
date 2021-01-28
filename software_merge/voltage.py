@@ -9,8 +9,6 @@ SPIMISO = 9
 SPIMOSI = 10
 SPICS = 8
 
-
-
 #port init
 def init():
           GPIO.setwarnings(False)
@@ -83,4 +81,4 @@ def calc_voltage(ad_value):
 #                   main()
 #          except KeyboardInterrupt:
 #                   pass
-GPIO.cleanup() 
+#GPIO.cleanup() 

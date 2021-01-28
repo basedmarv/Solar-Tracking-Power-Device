@@ -1,7 +1,7 @@
 # pip install schedule
 # import schedule # necessary for scheduling 
 # documentation: https://schedule.readthedocs.io/en/stable/api.html
-import time, traceback, datetime
+import time, traceback #, datetime
 from MCP3008 import MCP3008
 # from Movement import *
 # from multiprocessing import *
@@ -80,8 +80,8 @@ def move_panel():
     global servoHigh 
     global servoLow
 
-    # while True:
-    t_end = time.time() + 10
+    #while True:
+    t_end = time.time() + 5
     print("Tracking in progress....")
     while time.time() < t_end: 
         adc_readings = read_photoresistor()
@@ -105,20 +105,19 @@ def move_panel():
                 servoVAngle = servoVAngle - 1
             else:
                 servoVAngle = servoLow
-            
             time.sleep(0.01)
         else:
             servoVWrite(servoVAngle)
             time.sleep(0.01)
             
-        if(average14 > average23):
+        if(average14 < average23):
             if(servoHAngle < servoHigh):
                 servoHWrite(servoHAngle + 1)
                 servoHAngle = servoHAngle + 1
             else:
                 servoHAngle = servoHigh
             time.sleep(0.01)
-        elif(average14 < average23):
+        elif(average14 > average23):
             if(servoHAngle > servoLow):
                 servoHWrite(servoHAngle - 1)
                 servoHAngle = servoHAngle - 1
@@ -126,11 +125,13 @@ def move_panel():
                 servoHAngle = servoLow
             time.sleep(0.01)
         else:
-            servoVWrite(servoVAngle)
+            servoHWrite(servoHAngle)
             time.sleep(0.01)
+
     print(f'Tracking finished.\nNew servoVAngle: {servoVAngle}')
-    voltage_val = readadc(0, 11, 9, 10, 8)
-    insert_data(time = calculate_time, latitude = servoVAngle, longitude = servoHAngle, voltage = voltage_val) # need time, verify latitude and longitude, and voltage
+    print(f'Tracking finished.\nNew servoHAngle: {servoHAngle}')
+    #voltage_val = readadc(0, 11, 9, 10, 8)
+    insert_data(time = calculate_time(), latitude = servoVAngle, longitude = servoHAngle, voltage = 0.0) # need time, verify latitude and longitude, and voltage
     
 def calculate_time():
     now = datetime.datetime.now()
@@ -160,12 +161,10 @@ def every(delay, task):
     # skip tasks if we are behind schedule:
     next_time += (time.time() - next_time) // delay * delay + delay
 
-
-
-
 def run_jobs():
     setup()
-    threading.Thread(target=lambda: every(30,move_panel)).start()
+    #move_panel()
+    threading.Thread(target=lambda: every(10,move_panel)).start()
     
     #threading.Thread(target=every(1800,insert_data)).start()
     # movement_proc = Process(target = movement_schedule)

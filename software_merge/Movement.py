@@ -67,6 +67,8 @@ def loop():
         read3 = adc.read3(channel = 2) #channel 2
         read4 = adc.read4(channel = 3) #channel 3
         
+        print(f'read1= {read1} , read2: {read2}, read3: {read3}, read4: {read4}')
+
         average12 = (read1 + read2) / 2
         average34 = (read3 + read4) / 2
         average14 = (read1 + read4) / 2
