@@ -2,10 +2,10 @@ from jobs import *
 from dbms_connection import *
 
 if __name__ == '__main__':
-    #run_jobs()
-    connection = connect()
+    run_jobs()
+    #connection = connect()
     
-    cur = connection.cursor()
+    #cur = connection.cursor()
 
     # cur.execute("SELECT * FROM TandP;")
     # rows = cur.fetchall()
@@ -23,8 +23,9 @@ if __name__ == '__main__':
     #cur.execute("INSERT INTO Main_TBL(date,time,longitude,latitude,voltage)  VALUES ('8-28-2019'," + str(2.5) + "," + str(6.9) + "," + str(.69) + "," + str(69.69) + ");")
     #cur.execute("INSERT INTO Main_TBL(date,time,longitude,latitude,voltage) VALUES('18',350.0,23.0,24.0,0.0);")
     #print(cur.fetchone())
-    print(cur.execute("SELECT * FROM Main_TBL;")
+    #print(cur.execute("SELECT * FROM Main_TBL;"))
+    #print(cur.fetchone())
     #print(cur.execute("SELECT * FROM Main_TBL;").fetchall())
-    connection.commit()
-    cur.close()
+    #conn.commit()
+    #cur.close()
 

@@ -81,7 +81,7 @@ def move_panel():
     global servoLow
 
     #while True:
-    t_end = time.time() + 5
+    t_end = time.time() + 20
     print("Tracking in progress....")
     while time.time() < t_end: 
         adc_readings = read_photoresistor()
@@ -137,11 +137,11 @@ def calculate_time():
     now = datetime.datetime.now()
     hour = now.hour
     
-    if(now.minute > 15 and now.minute < 30):
+    if(now.minute > 15 and now.minute <= 30):
         minute = 0.25
-    elif(now.minute > 30 and now.minute < 45):
+    elif(now.minute > 30 and now.minute <= 45):
         minute = 0.50
-    elif(now.minute > 45 and now.minute < 60):
+    elif(now.minute > 45 and now.minute <= 60):
         minute = 0.75
     else:
         minute = 0
@@ -164,7 +164,7 @@ def every(delay, task):
 def run_jobs():
     setup()
     #move_panel()
-    threading.Thread(target=lambda: every(10,move_panel)).start()
+    threading.Thread(target=lambda: every(900,move_panel)).start()
     
     #threading.Thread(target=every(1800,insert_data)).start()
     # movement_proc = Process(target = movement_schedule)
