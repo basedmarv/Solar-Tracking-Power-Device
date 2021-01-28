@@ -35,7 +35,7 @@ def insert_data(time, latitude, longitude, voltage):
 
     date_today = datetime.datetime.today().strftime('%Y-%m-%d')
     #print(f'date_today: {date_today}')
-    cur.execute("INSERT INTO Main_TBL(date,time,longitude,latitude,voltage)  VALUES ('" + date_today + "'," + str(time) + "," + str(latitude) + "," + str(longitude) + "," + str(voltage) + ");")
+    cur.execute("INSERT INTO Main_TBL(date,time,longitude,latitude,voltage)  VALUES ('" + date_today + "'," + str(time) + "," + str(longitude) + "," + str(latitude) + "," + str(voltage) + ");")
     #print("INSERT INTO Main_TBL(date,time,longitude,latitude,voltage)  VALUES ('" + date_today + "'," + str(time) + "," + str(latitude) + "," + str(longitude) + "," + str(voltage) + ");")
 	#cur.execute(f'INSERT INTO Main_TBL(date,time,longitude,latitude,voltage) VALUES ({date_today}, {time}, {latitude}, {longitude}, {voltage});')
     connection.commit()

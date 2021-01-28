@@ -21,7 +21,7 @@ servoVPin = 21   #GPI21
 
 servoHAngle = 90
 servoVAngle = 90
-servoHigh = 180 #50 is the adjusted angle
+servoHigh = 100 #50 is the adjusted angle
 servoLow = 0
 photoResistor1 = 0 #top left
 photoResistor2 = 1 #top right
@@ -81,7 +81,7 @@ def move_panel():
     global servoLow
 
     #while True:
-    t_end = time.time() + 20
+    t_end = time.time() + 100
     print("Tracking in progress....")
     while time.time() < t_end: 
         adc_readings = read_photoresistor()
