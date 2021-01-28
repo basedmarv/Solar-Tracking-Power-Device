@@ -136,11 +136,11 @@ def calculate_time():
     now = datetime.datetime.now()
     hour = now.hour
     
-    if(now.minute > 15 or now.minute < 30):
+    if(now.minute > 15 and now.minute < 30):
         minute = 0.25
-    elif(now.minute > 30 or now.minute < 45):
+    elif(now.minute > 30 and now.minute < 45):
         minute = 0.50
-    elif(now.minute > 45 or now.minute < 60):
+    elif(now.minute > 45 and now.minute < 60):
         minute = 0.75
     else:
         minute = 0
