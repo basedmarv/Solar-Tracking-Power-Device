@@ -13,14 +13,14 @@ SPICS = 8
 
 #port init
 def init():
-          GPIO.setwarnings(False)
-          GPIO.setmode(GPIO.BCM)
-          # set up the SPI interface pins
-          GPIO.setup(SPIMOSI, GPIO.OUT)
-          GPIO.setup(SPIMISO, GPIO.IN)
-          GPIO.setup(SPICLK, GPIO.OUT)
-          GPIO.setup(SPICS, GPIO.OUT)
-          pass
+        #   GPIO.setwarnings(False)
+        #   GPIO.setmode(GPIO.BCM)
+        # set up the SPI interface pins
+        GPIO.setup(SPIMOSI, GPIO.OUT)
+        GPIO.setup(SPIMISO, GPIO.IN)
+        GPIO.setup(SPICLK, GPIO.OUT)
+        GPIO.setup(SPICS, GPIO.OUT)
+        pass
 
 #read SPI data from MCP3008(or MCP3204) chip,8 possible adc's (0 thru 7)
 def readadc(adcnum, clockpin, mosipin, misopin, cspin):
