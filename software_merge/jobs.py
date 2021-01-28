@@ -8,7 +8,7 @@ from MCP3008 import MCP3008
 import RPi.GPIO as GPIO
 import threading
 from dbms_connection import *
-
+from voltage import *
 
 OFFSE_DUTY = 0.5        #define pulse offset of servo
 SERVO_MIN_DUTY = 2.5+OFFSE_DUTY     #define pulse duty cycle for minimum angle of servo
@@ -28,14 +28,6 @@ photoResistor2 = 1 #top right
 photoResistor3 = 2 #bottom right
 photoResistor4 = 3 #bottom left 
 
-AO_pin = 0 #flame sensor AO connected to ADC chanannel 0
-# change these as desired - they're the pins connected from the
-# SPI port on the ADC to the Cobbler
-SPICLK = 11
-SPIMISO = 9
-SPIMOSI = 10
-SPICS = 8
-
 def map( value, fromLow, fromHigh, toLow, toHigh):  # map a value from one range to another range
     return (toHigh-toLow)*(value-fromLow) / (fromHigh-fromLow) + toLow
 
@@ -45,16 +37,10 @@ def setup():
     #global servoHigh 
     #global servoLow
     GPIO.setmode(GPIO.BCM)         # use PHYSICAL GPIO Numbering
-    GPIO.setwarnings(False)
     GPIO.setup(servoHPin, GPIO.OUT)   # Set servoPin to OUTPUT mode
     GPIO.output(servoHPin, GPIO.LOW)  # Make servoPin output LOW level
     GPIO.setup(servoVPin, GPIO.OUT)   # Set servoPin to OUTPUT mode
     GPIO.output(servoVPin, GPIO.LOW)  # Make servoPin output LOW level
-    
-    GPIO.setup(SPIMOSI, GPIO.OUT)
-    GPIO.setup(SPIMISO, GPIO.IN)
-    GPIO.setup(SPICLK, GPIO.OUT)
-    GPIO.setup(SPICS, GPIO.OUT)
 
     servoH = GPIO.PWM(servoHPin, 50)     # set Frequece to 50Hz
     servoH.start(0)                     # Set initial Duty Cycle to 0
@@ -143,7 +129,7 @@ def move_panel():
             servoVWrite(servoVAngle)
             time.sleep(0.01)
     print(f'Tracking finished.\nNew servoVAngle: {servoVAngle}')
-    voltage_val = readadc(AO_pin, SPICLK, SPIMOSI, SPIMISO, SPICS)
+    voltage_val = readadc(0, 11, 9, 10, 8)
     insert_data(time = calculate_time, latitude = servoVAngle, longitude = servoHAngle, voltage = voltage_val) # need time, verify latitude and longitude, and voltage
     
 def calculate_time():
@@ -161,45 +147,6 @@ def calculate_time():
 
     return hour + minute     
 
-#read SPI data from MCP3008(or MCP3204) chip,8 possible adc's (0 thru 7)
-def readadc(adcnum, clockpin, mosipin, misopin, cspin):
-        
-        if ((adcnum > 7) or (adcnum < 0)):
-                return -1
-        GPIO.output(cspin, True)  
-
-        GPIO.output(clockpin, False)  # start clock low
-        GPIO.output(cspin, False)     # bring CS low
-
-        commandout = adcnum
-        commandout |= 0x18  # start bit + single-ended bit
-        commandout <<= 3    # we only need to send 5 bits here
-        for i in range(5):
-                if (commandout & 0x80):
-                        GPIO.output(mosipin, True)
-                else:
-                        GPIO.output(mosipin, False)
-                commandout <<= 1
-                GPIO.output(clockpin, True)
-                GPIO.output(clockpin, False)
-
-        adcout = 0
-        # read in one empty bit, one null bit and 10 ADC bits
-        for i in range(12):
-                GPIO.output(clockpin, True)
-                GPIO.output(clockpin, False)
-                adcout <<= 1
-                if (GPIO.input(misopin)):
-                        adcout |= 0x1
-
-        GPIO.output(cspin, True)
-        
-        adcout >>= 1       # first bit is 'null' so drop it
-        return calc_voltage(adcout)
-
-def calc_voltage(ad_value):    
-        return ad_value*(3.3/1024)*5
-
 def every(delay, task):
   next_time = time.time() + delay
   while True:
@@ -213,6 +160,9 @@ def every(delay, task):
     # skip tasks if we are behind schedule:
     next_time += (time.time() - next_time) // delay * delay + delay
 
+
+
+
 def run_jobs():
     setup()
     threading.Thread(target=lambda: every(30,move_panel)).start()
@@ -221,7 +171,6 @@ def run_jobs():
     # movement_proc = Process(target = movement_schedule)
     # movement_proc.start()
     # movement_proc.join()
-
 
 
 # scheduling templates for later
