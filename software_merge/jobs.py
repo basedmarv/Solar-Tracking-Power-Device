@@ -1,13 +1,14 @@
 # pip install schedule
-import schedule # necessary for scheduling 
+# import schedule # necessary for scheduling 
 # documentation: https://schedule.readthedocs.io/en/stable/api.html
-import time, traceback
+import time, traceback, datetime
 from MCP3008 import MCP3008
 # from Movement import *
-from multiprocessing import *
+# from multiprocessing import *
 import RPi.GPIO as GPIO
 import threading
 from dbms_connection import *
+from voltage import *
 
 OFFSE_DUTY = 0.5        #define pulse offset of servo
 SERVO_MIN_DUTY = 2.5+OFFSE_DUTY     #define pulse duty cycle for minimum angle of servo
@@ -59,9 +60,6 @@ def servoVWrite(angle):      # make the servo rotate to specific angle
     elif(angle > servoHigh):
         angle = servoHigh
     servoV.ChangeDutyCycle(map(angle,servoLow,servoHigh,SERVO_MIN_DUTY,SERVO_MAX_DUTY)) # map the angle to duty cycle and output it 
-
-def adjust_servo():
-    print("Servo Angle Adjustment...")
 
 def read_photoresistor():
     global adc
@@ -131,8 +129,23 @@ def move_panel():
             servoVWrite(servoVAngle)
             time.sleep(0.01)
     print(f'Tracking finished.\nNew servoVAngle: {servoVAngle}')
-    insert_data(time = ,latitude = servoVAngle, longitude = servoHAngle, voltage = ) # need time, verify latitude and longitude, and voltage
+    voltage_val = readadc(0, 11, 9, 10, 8)
+    insert_data(time = calculate_time, latitude = servoVAngle, longitude = servoHAngle, voltage = voltage_val) # need time, verify latitude and longitude, and voltage
     
+def calculate_time():
+    now = datetime.datetime.now()
+    hour = now.hour
+    
+    if(now.minute > 15 or now.minute < 30):
+        minute = 0.25
+    elif(now.minute > 30 or now.minute < 45):
+        minute = 0.50
+    elif(now.minute > 45 or now.minute < 60):
+        minute = 0.75
+    else:
+        minute = 0
+
+    return hour + minute     
 
 def every(delay, task):
   next_time = time.time() + delay
