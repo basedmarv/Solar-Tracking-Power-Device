@@ -131,6 +131,7 @@ def move_panel():
             servoVWrite(servoVAngle)
             time.sleep(0.01)
     print(f'Tracking finished.\nNew servoVAngle: {servoVAngle}')
+    insert_data(time = ,latitude = servoVAngle, longitude = servoHAngle, voltage = ) # need time, verify latitude and longitude, and voltage
     
 
 def every(delay, task):
@@ -151,9 +152,8 @@ def every(delay, task):
 
 def run_jobs():
     setup()
-    print("before thread")
     threading.Thread(target=lambda: every(30,move_panel)).start()
-    print("after thread")    
+    
     #threading.Thread(target=every(1800,insert_data)).start()
     # movement_proc = Process(target = movement_schedule)
     # movement_proc.start()
