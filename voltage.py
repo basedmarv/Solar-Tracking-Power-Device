@@ -5,6 +5,7 @@ import RPi.GPIO as GPIO
 import time
 
 AO_pin = 4 #channel pin 4
+A1_pin = 5 #channel pin 4
 SPICLK = 11
 SPIMISO = 9
 SPIMOSI = 10
@@ -62,9 +63,13 @@ def main():
      time.sleep(1)
      while True:
           ad_value = readadc(AO_pin, SPICLK, SPIMOSI, SPIMISO, SPICS)
-          voltage= ad_value*(3.3/1024)*5
-          print(f'Battery voltage: {voltage}.')
-          time.sleep(1.0)
+          solarVoltage= ad_value*(3.3/1024)*5
+          print(f'Solar voltage: {solarVoltage}.')
+          #time.sleep(1) 
+          ad_value = readadc(A1_pin, SPICLK, SPIMOSI, SPIMISO, SPICS)
+          batteryVoltage= ad_value*(3.3/1024)*5
+          print(f'Battery voltage: {batteryVoltage}.')
+          time.sleep(1)
                   
 if __name__ =='__main__':
      try:
