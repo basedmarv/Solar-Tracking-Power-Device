@@ -28,6 +28,13 @@ photoResistor2 = 1 #top right
 photoResistor3 = 2 #bottom right
 photoResistor4 = 3 #bottom left 
 
+AO_pin = 4 #channel pin 4
+A1_pin = 5 #channel pin 4
+SPICLK = 11
+SPIMISO = 9
+SPIMOSI = 10
+SPICS = 8
+
 def map( value, fromLow, fromHigh, toLow, toHigh):  # map a value from one range to another range
     return (toHigh-toLow)*(value-fromLow) / (fromHigh-fromLow) + toLow
 
@@ -46,6 +53,12 @@ def setup():
     servoH.start(0)                     # Set initial Duty Cycle to 0
     servoV = GPIO.PWM(servoVPin, 50)     # set Frequece to 50Hz
     servoV.start(0)                     # Set initial Duty Cycle to 0
+    
+    GPIO.setup(SPIMOSI, GPIO.OUT) 
+    GPIO.setup(SPIMISO, GPIO.IN)
+    GPIO.setup(SPICLK, GPIO.OUT)
+    GPIO.setup(SPICS, GPIO.OUT)
+    pass
 
 def servoHWrite(angle):      # make the servo rotate to specific angle 
     if(angle < servoLow):
@@ -131,6 +144,15 @@ def move_panel():
     print(f'Tracking finished.\nNew servoVAngle: {servoVAngle}')
     print(f'Tracking finished.\nNew servoHAngle: {servoHAngle}')
     #voltage_val = readadc(0, 11, 9, 10, 8)
+    ad_value = readadc(AO_pin, SPICLK, SPIMOSI, SPIMISO, SPICS)
+    solarVoltage= ad_value*(3.3/1024)*5
+    print(f'Solar voltage: {solarVoltage}.')
+    #time.sleep(1) 
+    ad_value = readadc(A1_pin, SPICLK, SPIMOSI, SPIMISO, SPICS)
+    batteryVoltage= ad_value*(3.3/1024)*5
+    print(f'Battery voltage: {batteryVoltage}.')
+    time.sleep(1)
+    
     insert_data(time = calculate_time(), latitude = servoVAngle, longitude = servoHAngle, voltage = 0.0) # need time, verify latitude and longitude, and voltage
     
 def calculate_time():
