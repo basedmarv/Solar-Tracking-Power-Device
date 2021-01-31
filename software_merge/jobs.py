@@ -141,19 +141,19 @@ def move_panel():
             servoHWrite(servoHAngle)
             time.sleep(0.01)
 
-    print(f'Tracking finished.\nNew servoVAngle: {servoVAngle}')
-    print(f'Tracking finished.\nNew servoHAngle: {servoHAngle}')
-    #voltage_val = readadc(0, 11, 9, 10, 8)
-    ad_value = readadc(AO_pin, SPICLK, SPIMOSI, SPIMISO, SPICS)
-    solarVoltage= ad_value*(3.3/1024)*5
-    print(f'Solar voltage: {solarVoltage}.')
-    #time.sleep(1) 
-    ad_value = readadc(A1_pin, SPICLK, SPIMOSI, SPIMISO, SPICS)
-    batteryVoltage= ad_value*(3.3/1024)*5
-    print(f'Battery voltage: {batteryVoltage}.')
-    time.sleep(1)
-    
-    insert_data(time = calculate_time(), latitude = servoVAngle, longitude = servoHAngle, voltage = 0.0) # need time, verify latitude and longitude, and voltage
+        if (time.time() == t_end - 1):
+            print(f'Tracking finished.\nNew servoVAngle: {servoVAngle}')
+            print(f'Tracking finished.\nNew servoHAngle: {servoHAngle}')
+            #voltage_val = readadc(0, 11, 9, 10, 8)
+            ad_value = readadc(AO_pin, SPICLK, SPIMOSI, SPIMISO, SPICS)
+            solarVoltage= ad_value*(3.3/1024)*5
+            print(f'Solar voltage: {solarVoltage}.')
+            #time.sleep(1) 
+            ad_value = readadc(A1_pin, SPICLK, SPIMOSI, SPIMISO, SPICS)
+            batteryVoltage= ad_value*(3.3/1024)*5
+            print(f'Battery voltage: {batteryVoltage}.')
+            time.sleep(1)
+            insert_data(time = calculate_time(), latitude = servoVAngle, longitude = servoHAngle, voltage = solarVoltage) # need time, verify latitude and longitude, and voltage
     
 def calculate_time():
     now = datetime.datetime.now()
