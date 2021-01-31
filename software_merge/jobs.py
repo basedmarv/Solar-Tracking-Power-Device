@@ -183,11 +183,18 @@ def every(delay, task):
     # skip tasks if we are behind schedule:
     next_time += (time.time() - next_time) // delay * delay + delay
 
+def destroy():
+    servoH.stop()
+    servoV.stop()
+    GPIO.cleanup()
+
 def run_jobs():
     setup()
     #move_panel()
     threading.Thread(target=lambda: every(900,move_panel)).start()
     
+    except KeyboardInterrupt:
+        destroy()
     #threading.Thread(target=every(1800,insert_data)).start()
     # movement_proc = Process(target = movement_schedule)
     # movement_proc.start()
