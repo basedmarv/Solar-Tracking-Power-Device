@@ -7,6 +7,7 @@ from MCP3008 import MCP3008
 # from multiprocessing import *
 import RPi.GPIO as GPIO
 import threading
+import signal
 from dbms_connection import *
 from voltage import *
 
@@ -183,18 +184,18 @@ def every(delay, task):
     # skip tasks if we are behind schedule:
     next_time += (time.time() - next_time) // delay * delay + delay
 
-def destroy():
+def destroy(signal, frame):
     servoH.stop()
     servoV.stop()
     GPIO.cleanup()
+    exit(0)
 
 def run_jobs():
     setup()
     #move_panel()
     threading.Thread(target=lambda: every(60,move_panel)).start()
     
-    except KeyboardInterrupt:
-        destroy()
+    signal.signal(signal.SIGINT, destroy)
     #threading.Thread(target=every(1800,insert_data)).start()
     # movement_proc = Process(target = movement_schedule)
     # movement_proc.start()
