@@ -55,10 +55,10 @@ def setup():
     servoV = GPIO.PWM(servoVPin, 50)     # set Frequece to 50Hz
     servoV.start(0)                     # Set initial Duty Cycle to 0
     
-    GPIO.setup(SPIMOSI, GPIO.OUT) 
-    GPIO.setup(SPIMISO, GPIO.IN)
-    GPIO.setup(SPICLK, GPIO.OUT)
-    GPIO.setup(SPICS, GPIO.OUT)
+    #GPIO.setup(SPIMOSI, GPIO.OUT) 
+    #GPIO.setup(SPIMISO, GPIO.IN)
+    #GPIO.setup(SPICLK, GPIO.OUT)
+    #GPIO.setup(SPICS, GPIO.OUT)
     pass
 
 def servoHWrite(angle):      # make the servo rotate to specific angle 
@@ -142,19 +142,19 @@ def move_panel():
             servoHWrite(servoHAngle)
             time.sleep(0.01)
 
-        if (time.time() == t_end - 1):
-            print(f'Tracking finished.\nNew servoVAngle: {servoVAngle}')
-            print(f'Tracking finished.\nNew servoHAngle: {servoHAngle}')
+        #if (time.time() == t_end - 1):
+    print(f'Tracking finished.\nNew servoVAngle: {servoVAngle}')
+    print(f'Tracking finished.\nNew servoHAngle: {servoHAngle}')
             #voltage_val = readadc(0, 11, 9, 10, 8)
-            ad_value = readadc(AO_pin, SPICLK, SPIMOSI, SPIMISO, SPICS)
-            solarVoltage= ad_value*(3.3/1024)*5
-            print(f'Solar voltage: {solarVoltage}.')
+            #ad_value = readadc(AO_pin, SPICLK, SPIMOSI, SPIMISO, SPICS)
+            #solarVoltage= ad_value*(3.3/1024)*5
+            #print(f'Solar voltage: {solarVoltage}.')
             #time.sleep(1) 
-            ad_value = readadc(A1_pin, SPICLK, SPIMOSI, SPIMISO, SPICS)
-            batteryVoltage= ad_value*(3.3/1024)*5
-            print(f'Battery voltage: {batteryVoltage}.')
-            time.sleep(1)
-            insert_data(time = calculate_time(), latitude = servoVAngle, longitude = servoHAngle, voltage = solarVoltage) # need time, verify latitude and longitude, and voltage
+            #ad_value = readadc(A1_pin, SPICLK, SPIMOSI, SPIMISO, SPICS)
+            #batteryVoltage= ad_value*(3.3/1024)*5
+            #print(f'Battery voltage: {batteryVoltage}.')
+            #time.sleep(1)
+            #insert_data(time = calculate_time(), latitude = servoVAngle, longitude = servoHAngle, voltage = solarVoltage) # need time, verify latitude and longitude, and voltage
     
 def calculate_time():
     now = datetime.datetime.now()
