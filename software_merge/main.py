@@ -1,8 +1,10 @@
-from jobs import * 
+from Altjobs import * 
+#from jobs import * 
 from dbms_connection import *
 
 if __name__ == '__main__':
-    run_jobs()
+    #run_jobs()
+	run_Altjobs()
     #connection = connect()
     
     #cur = connection.cursor()

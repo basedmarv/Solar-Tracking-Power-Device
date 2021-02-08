@@ -30,6 +30,16 @@ class MCP3008:
           adc = self.spi.xfer2([1,(8+channel) << 4, 0])
           data = ((adc[1] & 3) << 8) + adc[2]     
           return data
+	 #Solar read 
+     def read5(self, channel = 4):
+          adc = self.spi.xfer2([1,(8+channel) << 4, 0])
+          data = ((adc[1] & 3) << 8) + adc[2]     
+          return data
+	 #Battery read	  
+     def read6(self, channel = 5):
+          adc = self.spi.xfer2([1,(8+channel) << 4, 0])
+          data = ((adc[1] & 3) << 8) + adc[2]     
+          return data
 
      def close(self):
           self.spi.close()
