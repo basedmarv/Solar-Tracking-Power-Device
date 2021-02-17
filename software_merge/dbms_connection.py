@@ -42,3 +42,16 @@ def insert_data(time, latitude, longitude, voltage):
     cur.close()
     #print(cur.fetchone())
     #print(cur.execute("SELECT * FROM Main_TBL;").fetchall())
+
+def extract_data():
+    connection = connect()
+    cur = connection.cursor()
+
+    cur.execute("SELECT time, latitude FROM Main_TBL;")
+    rows = cur.fetchall()
+    headers = [col[0] for col in cur.description]
+    fp = open('data_spreadsheet.csv', 'w')
+    myFile = csv.writer(fp)
+    myFile.writerow(headers)
+    myFile.writerows(rows)
+    fp.close()    
