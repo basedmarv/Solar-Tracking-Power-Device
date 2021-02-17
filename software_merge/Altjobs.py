@@ -141,7 +141,7 @@ def move_panel():
     insert_data(time = calculate_time(), latitude = servoVAngle, longitude = servoHAngle, voltage = solarVoltage) # need time, verify latitude and longitude, and voltage
 
 def ML_move():
-    slope, intercept = createModel()
+    slope, intercept = createModel("Latitude Angle")
     estimatedPosition = getEstimatedPosition(slope, intercept)
     
     if (estimatedPosition > 180):
