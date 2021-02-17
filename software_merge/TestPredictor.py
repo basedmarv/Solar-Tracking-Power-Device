@@ -5,10 +5,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import linear_model
 from sklearn.metrics import r2_score
+from dbms_connection import * 
 
 def createModel(angle):
     # Read the CSV file:
-    data = pd.read_csv(r"FakeDataSet.csv")
+    filename = extract_data()
+    data = pd.read_csv(r"%s" % filename)
     data.head()
     
     data = data[["Time", angle]]

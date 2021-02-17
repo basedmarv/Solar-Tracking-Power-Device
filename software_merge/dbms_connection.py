@@ -47,11 +47,13 @@ def extract_data():
     connection = connect()
     cur = connection.cursor()
 
+    filename = 'data_spreadsheet.csv'
     cur.execute("SELECT time, latitude FROM Main_TBL;")
     rows = cur.fetchall()
     headers = [col[0] for col in cur.description]
-    fp = open('data_spreadsheet.csv', 'w')
+    fp = open(filename, 'w')
     myFile = csv.writer(fp)
     myFile.writerow(headers)
     myFile.writerows(rows)
     fp.close()    
+    return filename

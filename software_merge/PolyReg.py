@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 
 def createPolyModel(angle):
     # Read the CSV file:
-    data = pd.read_csv(r"FakeDataSet.csv")
+    filename = extract_data()
+    data = pd.read_csv(r"%s" % filename)
     data.head()
     
     data = data[["Time", angle]]
