@@ -9,6 +9,7 @@ import RPi.GPIO as GPIO
 import threading
 from dbms_connection import *
 from voltage import *
+from TestPredictor import *
 
 OFFSE_DUTY = 0.5        #define pulse offset of servo
 SERVO_MIN_DUTY = 2.5+OFFSE_DUTY     #define pulse duty cycle for minimum angle of servo
@@ -138,6 +139,28 @@ def move_panel():
     print(f'Battery voltage: {batteryVoltage}.')
     #voltage_val = readadc(0, 11, 9, 10, 8)
     insert_data(time = calculate_time(), latitude = servoVAngle, longitude = servoHAngle, voltage = solarVoltage) # need time, verify latitude and longitude, and voltage
+
+def ML_move():
+    slope, intercept = createModel()
+    estimatedPosition = getEstimatedPosition(slope, intercept)
+    
+    if (estimatedPosition > 180):
+        estimatedPosition = 180
+    elif (estimatedPosition < 0):
+        estimatedPosition = 0
+
+    print(f'Estimated position: {estimatedPosition}.')
+
+    if (servoV < estimatedPosition):
+        for i in range(servoV, estimatedPosition + 1, 1):
+            servoVWrite(i)
+            time.sleep(0.001)
+        time.sleep(0.5)
+    else:
+        for j in range(servoV, estimatedPosition - 1, -1):
+            servoWrite(j)
+            time.sleep(0.001)
+        time.sleep(0.5)
     
 def calculate_time():
     now = datetime.datetime.now()
@@ -170,4 +193,5 @@ def every(delay, task):
 def run_Altjobs():
     setup()
     #move_panel()
-    threading.Thread(target=lambda: every(20,move_panel)).start()
+    #threading.Thread(target=lambda: every(20,move_panel)).start()
+    threading.Thread(target=lambda: every(20,ML_move)).start()
