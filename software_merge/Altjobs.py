@@ -10,6 +10,7 @@ import threading
 from dbms_connection import *
 from voltage import *
 from TestPredictor import *
+from PolyReg import *
 
 OFFSE_DUTY = 0.5        #define pulse offset of servo
 SERVO_MIN_DUTY = 2.5+OFFSE_DUTY     #define pulse duty cycle for minimum angle of servo
@@ -142,16 +143,19 @@ def move_panel():
 
 def ML_move():
     slope, intercept = createModel("Latitude Angle")
-    estimatedPosition = getEstimatedPosition(slope, intercept)
+    estimatedPosition = getEstimatedAngle(slope, intercept)
     
-    if (estimatedPosition > 180):
+    #model, length = createPolyModel("Latitude Angle")
+    #estimatedPosition = getPolyEstimatedAngle(model, length)
+    
+    if(estimatedPosition > 180):
         estimatedPosition = 180
-    elif (estimatedPosition < 0):
+    elif(estimatedPosition < 0):
         estimatedPosition = 0
 
     print(f'Estimated position: {estimatedPosition}.')
 
-    if (servoV < estimatedPosition):
+    if(servoV < estimatedPosition):
         for i in range(servoV, estimatedPosition + 1, 1):
             servoVWrite(i)
             time.sleep(0.001)
