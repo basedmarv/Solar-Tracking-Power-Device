@@ -95,7 +95,7 @@ def move_panel():
     global servoLow
 
     #while True:
-    t_end = time.time() + 30
+    t_end = time.time() + 10
     print("Tracking in progress....")
     while time.time() < t_end: 
         adc_readings = read_photoresistor()
@@ -193,7 +193,7 @@ def destroy(signal, frame):
 def run_jobs():
     setup()
     #move_panel()
-    threading.Thread(target=lambda: every(60,move_panel)).start()
+    threading.Thread(target=lambda: every(20,move_panel)).start()
     
     signal.signal(signal.SIGINT, destroy)
     #threading.Thread(target=every(1800,insert_data)).start()

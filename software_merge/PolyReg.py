@@ -1,6 +1,8 @@
 import datetime
+import warnings
 import pandas as pd
 import numpy as np
+warnings.filterwarnings("ignore",category=DeprecationWarning) 
 import matplotlib.pyplot as plt
 from dbms_connection import *
 
@@ -10,14 +12,14 @@ def createPolyModel(angle):
     data = pd.read_csv(r"%s" % filename)
     data.head()
     
-    data = data[["Time", angle]]
+    data = data[["time", angle]]
     
-    plt.scatter(data["Time"], data[angle], color = "blue")
-    plt.xlabel("Time")
+    plt.scatter(data["time"], data[angle], color = "blue")
+    plt.xlabel("time")
     plt.ylabel(angle)
     plt.show()
     
-    x = np.array(data["Time"])
+    x = np.array(data["time"])
     y = np.array(data[angle])
     
     n = len(x)
@@ -105,5 +107,5 @@ def getPolyEstimatedAngle(model, length):
     
     return estimatedAngle
 
-model, length = createPolyModel("Latitude Angle")
-getPolyEstimatedAngle(model, length)
+#model, length = createPolyModel("latitude")
+#getPolyEstimatedAngle(model, length)

@@ -1,7 +1,9 @@
 # Import required libraries:
 import datetime
+import warnings
 import pandas as pd
 import numpy as np
+warnings.filterwarnings("ignore",category=DeprecationWarning)
 import matplotlib.pyplot as plt
 from sklearn import linear_model
 from sklearn.metrics import r2_score
@@ -11,9 +13,10 @@ def createModel(angle):
     # Read the CSV file:
     filename = extract_data()
     data = pd.read_csv(r"%s" % filename)
+    #data = pd.read_csv(r"FakeDataSet.csv")
     data.head()
     
-    data = data[["Time", angle]]
+    data = data[["time", angle]]
     print(data)
     
     # Generating training and testing data from our data:
@@ -24,7 +27,7 @@ def createModel(angle):
     # Modeling:
     # Using sklearn package to model data:
     regr = linear_model.LinearRegression()
-    train_x = np.array(train[["Time"]])
+    train_x = np.array(train[["time"]])
     train_y = np.array(train[[angle]])
     regr.fit(train_x, train_y)
     
@@ -40,7 +43,7 @@ def createModel(angle):
 #    plt.show()
     
     # Checking various accuracy:
-    actual_test_x = np.array(test[['Time']])
+    actual_test_x = np.array(test[['time']])
     actual_test_y = np.array(test[[angle]])
     predicted_test_y = regr.predict(actual_test_x)
     
@@ -65,10 +68,10 @@ def getEstimatedAngle(slope, intercept):
     return estimatedAngle
 
 # Function calls
-print("Time vs Latitude Angle:")
-slope1, intercept1 = createModel("Latitude Angle")
-getEstimatedAngle(slope1, intercept1)
-print(" ")
-print("Time vs Longitude Angle:")
-slope2, intercept2 = createModel("Longitude Angle")
-getEstimatedAngle(slope2, intercept2)
+#print("Time vs Latitude Angle:")
+#slope1, intercept1 = createModel("latitude")
+#getEstimatedAngle(slope1, intercept1)
+#print(" ")
+#print("Time vs Longitude Angle:")
+#slope2, intercept2 = createModel("Longitude Angle")
+#getEstimatedAngle(slope2, intercept2)

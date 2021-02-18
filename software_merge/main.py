@@ -4,7 +4,7 @@ from dbms_connection import *
 
 if __name__ == '__main__':
     #run_jobs()
-	run_Altjobs()
+    run_Altjobs()
     #connection = connect()
     
     #cur = connection.cursor()

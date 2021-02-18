@@ -1,16 +1,17 @@
 # pip install schedule
 # import schedule # necessary for scheduling 
 # documentation: https://schedule.readthedocs.io/en/stable/api.html
-import time, traceback #, datetime
+import warnings
+import time, traceback 
 from MCP3008 import MCP3008
-# from Movement import *
-# from multiprocessing import *
+import pandas as pd 
 import RPi.GPIO as GPIO
 import threading
 from dbms_connection import *
 from voltage import *
 from TestPredictor import *
 from PolyReg import *
+warnings.filterwarnings("ignore",category=DeprecationWarning)
 
 OFFSE_DUTY = 0.5        #define pulse offset of servo
 SERVO_MIN_DUTY = 2.5+OFFSE_DUTY     #define pulse duty cycle for minimum angle of servo
@@ -142,11 +143,11 @@ def move_panel():
     insert_data(time = calculate_time(), latitude = servoVAngle, longitude = servoHAngle, voltage = solarVoltage) # need time, verify latitude and longitude, and voltage
 
 def ML_move():
-    slope, intercept = createModel("Latitude Angle")
-    estimatedPosition = getEstimatedAngle(slope, intercept)
+    #slope, intercept = createModel("latitude")
+    #estimatedPosition = getEstimatedAngle(slope, intercept)
     
-    #model, length = createPolyModel("Latitude Angle")
-    #estimatedPosition = getPolyEstimatedAngle(model, length)
+    model, length = createPolyModel("latitude")
+    estimatedPosition = getPolyEstimatedAngle(model, length)
     
     if(estimatedPosition > 180):
         estimatedPosition = 180
@@ -154,15 +155,15 @@ def ML_move():
         estimatedPosition = 0
 
     print(f'Estimated position: {estimatedPosition}.')
-
-    if(servoV < estimatedPosition):
-        for i in range(servoV, estimatedPosition + 1, 1):
+    
+    if(servoVAngle < estimatedPosition):
+        for i in range(servoVAngle, estimatedPosition + 1, 1):
             servoVWrite(i)
             time.sleep(0.001)
         time.sleep(0.5)
     else:
-        for j in range(servoV, estimatedPosition - 1, -1):
-            servoWrite(j)
+        for j in range(servoVAngle, estimatedPosition - 1, -1):
+            servoVWrite(j)
             time.sleep(0.001)
         time.sleep(0.5)
     
@@ -196,6 +197,11 @@ def every(delay, task):
 
 def run_Altjobs():
     setup()
+    #ML_move()
+    #for i in range(servoV, 100 + 1, 1):
+    #      servoVWrite(i)
+    #      time.sleep(0.001)
+    #time.sleep(0.5)
     #move_panel()
     #threading.Thread(target=lambda: every(20,move_panel)).start()
     threading.Thread(target=lambda: every(20,ML_move)).start()
