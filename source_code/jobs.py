@@ -134,11 +134,11 @@ def move_panel():
             time.sleep(0.01)
 
     print(f'Tracking finished.\nNew servoVAngle: {servoVAngle}')
-    print(f'Tracking finished.\nNew servoHAngle: {servoHAngle}')
+    print(f'New servoHAngle: {servoHAngle}\n')
     solarVoltage= adc_readings[4]*(3.3/1024)*5
-    print(f'Solar voltage: {solarVoltage}.')
+    print(f'Solar voltage: {solarVoltage}.\n')
     batteryVoltage= adc_readings[5]*(3.3/1024)*5
-    print(f'Battery voltage: {batteryVoltage}.')
+    print(f'Battery voltage: {batteryVoltage}.\n')
     #voltage_val = readadc(0, 11, 9, 10, 8)
     insert_data(time = calculate_time(), latitude = servoVAngle, longitude = servoHAngle, voltage = solarVoltage) # need time, verify latitude and longitude, and voltage
 
@@ -195,7 +195,7 @@ def every(delay, task):
     # skip tasks if we are behind schedule:
     next_time += (time.time() - next_time) // delay * delay + delay
 
-def run_Altjobs():
+def run_mainjobs():
     setup()
     #ML_move()
     #for i in range(servoV, 100 + 1, 1):
