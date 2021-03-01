@@ -146,8 +146,8 @@ def ML_move():
     #slope, intercept = createModel("latitude")
     #estimatedPosition = getEstimatedAngle(slope, intercept)
     
-    model, length = createPolyModel("latitude")
-    estimatedPosition = getPolyEstimatedAngle(model, length)
+    coef = createPolyModel("latitude")
+    estimatedPosition = getPolyEstimatedAngle(coef)
     
     if(estimatedPosition > 180):
         estimatedPosition = 180

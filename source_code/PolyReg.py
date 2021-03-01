@@ -77,35 +77,24 @@ def createPolyModel(angle):
     plt.scatter(x,y)
     plt.plot(x, y_pred, c="red")
     
-    return y_pred, len(x)
+    return theta
     
-def getPolyEstimatedAngle(model, length):
-    now = datetime.datetime.now()
-    hour = now.hour
-    
-    if(now.minute > 15 and now.minute <= 30):
-        minute = 0.25
-    elif(now.minute > 30 and now.minute <= 45):
-        minute = 0.50
-    elif(now.minute > 45 and now.minute <= 60):
-        minute = 0.75
-    else:
-        minute = 0
-    
-    currentTimeDecimal = hour + minute
+def getPolyEstimatedAngle(coef):
+    getCurrentTime = datetime.datetime.now().time()
+    currentTime = getCurrentTime.strftime("%H:%M:%S")
+    print("Current time:", currentTime)
+    (hour, minute, second) = currentTime.split(':')
+    currentTimeDecimal = int(hour) + (int(minute)/60) + (int(second)/3600)
     print("Current time as decimal:", currentTimeDecimal)
     
-    if(currentTimeDecimal < 8):
-        estimatedAngle = model[0]
-    elif(currentTimeDecimal > 17):
-        estimatedAngle = model[length - 1]
-    else:
-        index = currentTimeDecimal * 4 - 32
-        estimatedAngle = model[index]
+    x1 = currentTimeDecimal
+    x2 = np.power(x1,2)
+    x3 = np.power(x1,3)
     
+    estimatedAngle = coef[0] + coef[1]*x1 + coef[2]*x2 + coef[3]*x3
     print("Estimated angle:", estimatedAngle)
     
     return estimatedAngle
 
-#model, length = createPolyModel("latitude")
-#getPolyEstimatedAngle(model, length)
+#coef = createPolyModel("latitude")
+#getPolyEstimatedAngle(coef)
