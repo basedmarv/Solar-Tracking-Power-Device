@@ -14,7 +14,7 @@ The high demand for renewable energy around the world is currently propelling th
 * Incorporate Machine Learning by using gathered data to automatically predict the most optimal position and range of the tracker
 * Properly implement methods that allows for accurate solar energy readings and utilize the gathered data to optimize the functionality of the solar tracker
 ### Hardware 
-* Fabricate structural design of tracker similar to figure on the left
+* Fabricate structural design of tracker similar to figure above
 * Design and Solder circuit to read analog values on Raspberry Pi
 
 
