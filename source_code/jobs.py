@@ -11,6 +11,7 @@ from dbms_connection import *
 from voltage import *
 from TestPredictor import *
 from PolyReg import *
+from PolyRegNew import *
 warnings.filterwarnings("ignore",category=DeprecationWarning)
 
 OFFSE_DUTY = 0.5        #define pulse offset of servo
@@ -148,6 +149,8 @@ def ML_move():
     
     coef = createPolyModel("latitude")
     estimatedPosition = getPolyEstimatedAngle(coef)
+    
+    #estimatedPosition = getAngle("latitude")
     
     if(estimatedPosition > 180):
         estimatedPosition = 180
