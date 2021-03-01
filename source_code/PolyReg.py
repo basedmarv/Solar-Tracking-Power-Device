@@ -45,24 +45,20 @@ def createPolyModel(angle):
     # Finding transpose:
     x_new_transpose = np.transpose(x_new)
     
-    # Finding dot product of original and transposed matrix :
+    # Finding dot product of original and transposed matrix:
     x_new_transpose_dot_x_new = x_new_transpose.dot(x_new)
     
     # Finding Inverse:
-    temp_1 = np.linalg.inv(x_new_transpose_dot_x_new)# Finding the dot product of transposed x and y :
+    temp_1 = np.linalg.inv(x_new_transpose_dot_x_new)
+    
+    # Finding the dot product of transposed x and y:
     temp_2 = x_new_transpose.dot(y)
     
     # Finding coefficients:
-    theta = temp_1.dot(temp_2)
-    
-    # Store coefficient values in different variables:
-    beta_0 = theta[0]
-    beta_1 = theta[1]
-    beta_2 = theta[2]
-    beta_3 = theta[3]
+    coef = temp_1.dot(temp_2)
     
     # Prediction function:
-    y_pred = beta_0 + beta_1*x1 + beta_2*x2 + beta_3*x3
+    y_pred = coef[0] + coef[1]*x1 + coef[2]*x2 + coef[3]*x3
     #print("Prediction:", y_pred)
     
     # Calculate accuracy of model:
