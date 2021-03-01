@@ -16,7 +16,7 @@ The high demand for renewable energy around the world is currently propelling th
 
 ## Built With
 
-* [MCRP3008](https://github.com/Freenove/Freenove_Ultimate_Starter_Kit_for_Raspberry_Pi) - ADC Communication
+* [MCP3008](https://github.com/Freenove/Freenove_Ultimate_Starter_Kit_for_Raspberry_Pi) - ADC Communication
 * [Pandas](https://pandas.pydata.org/docs/user_guide/index.html) - Data Management for Machine Learning
 * [dotenv](https://pypi.org/project/python-dotenv/) - Database Management System Data Encryption
 * [Rpio.GPIO](https://pypi.org/project/RPi.GPIO/) - Raspberry Pi Software and Hardware Integration
@@ -31,12 +31,12 @@ The high demand for renewable energy around the world is currently propelling th
 ## Authors:
 
 ### Software Team
-* **Jayrell Quiambao** 
-* **Roy Matthew Ramos**
+* **Jayrell Quiambao** -  jlquiamb@uci.edu 
+* **Roy Matthew Ramos** - [LinkedIn](https://www.linkedin.com/in/roymatthewr/) - roymr@uci.edu
 
 ### Hardware Team
-* **Marvin Neil Sabas**
-* **Michael Sanchez-Hernandez**
+* **Marvin Neil Sabas** - [LinkedIn](https://www.linkedin.com/in/marvinsabas/) - msabas@uci.edu
+* **Michael Sanchez-Hernandez** - [LinkedIn](https://www.linkedin.com/in/michaelsanchezhernandez/) - sanchem6@uci.edu
 
 ## Acknowledgments 
 * [Professor Nader Bagherzadeh](https://engineering.uci.edu/users/nader-bagherzadeh)
