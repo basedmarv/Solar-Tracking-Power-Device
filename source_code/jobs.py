@@ -1,18 +1,15 @@
 # pip install schedule
 # import schedule # necessary for scheduling 
 # documentation: https://schedule.readthedocs.io/en/stable/api.html
-import warnings
 import time, traceback 
 from MCP3008 import MCP3008
 import pandas as pd 
 import RPi.GPIO as GPIO
 import threading
+import signal 
 from dbms_connection import *
 from voltage import *
-from TestPredictor import *
-from PolyReg import *
 from PolyRegNew import *
-warnings.filterwarnings("ignore",category=DeprecationWarning)
 
 OFFSE_DUTY = 0.5        #define pulse offset of servo
 SERVO_MIN_DUTY = 2.5+OFFSE_DUTY     #define pulse duty cycle for minimum angle of servo
@@ -38,8 +35,6 @@ def map( value, fromLow, fromHigh, toLow, toHigh):  # map a value from one range
 def setup():
     global servoH
     global servoV
-    #global servoHigh 
-    #global servoLow
     GPIO.setmode(GPIO.BCM)         # use PHYSICAL GPIO Numbering
     GPIO.setup(servoHPin, GPIO.OUT)   # Set servoPin to OUTPUT mode
     GPIO.output(servoHPin, GPIO.LOW)  # Make servoPin output LOW level
@@ -134,23 +129,16 @@ def move_panel():
             servoHWrite(servoHAngle)
             time.sleep(0.01)
 
-    print(f'Tracking finished.\nNew servoVAngle: {servoVAngle}')
-    print(f'New servoHAngle: {servoHAngle}\n')
+    #print(f'Tracking finished.\nNew servoVAngle: {servoVAngle}')
+    #print(f'New servoHAngle: {servoHAngle}\n')
     solarVoltage= adc_readings[4]*(3.3/1024)*5
-    print(f'Solar voltage: {solarVoltage}.\n')
+    #print(f'Solar voltage: {solarVoltage}.\n')
     batteryVoltage= adc_readings[5]*(3.3/1024)*5
-    print(f'Battery voltage: {batteryVoltage}.\n')
-    #voltage_val = readadc(0, 11, 9, 10, 8)
+    #print(f'Battery voltage: {batteryVoltage}.\n')
     insert_data(time = calculate_time(), latitude = servoVAngle, longitude = servoHAngle, voltage = solarVoltage) # need time, verify latitude and longitude, and voltage
 
 def ML_move():
-    #slope, intercept = createModel("latitude")
-    #estimatedPosition = getEstimatedAngle(slope, intercept)
-    
-    coef = createPolyModel("latitude")
-    estimatedPosition = getPolyEstimatedAngle(coef)
-    
-    #estimatedPosition = getAngle("latitude")
+    estimatedPosition = int(getAngle("latitude"))
     
     if(estimatedPosition > 180):
         estimatedPosition = 180
@@ -158,7 +146,7 @@ def ML_move():
         estimatedPosition = 0
 
     print(f'Estimated position: {estimatedPosition}.')
-    
+     
     if(servoVAngle < estimatedPosition):
         for i in range(servoVAngle, estimatedPosition + 1, 1):
             servoVWrite(i)
@@ -198,13 +186,18 @@ def every(delay, task):
     # skip tasks if we are behind schedule:
     next_time += (time.time() - next_time) // delay * delay + delay
 
-def run_mainjobs():
+def destroy(signal, frame):
+    servoH.stop()
+    servoV.stop()
+    GPIO.cleanup()
+    exit(0)
+
+def run_trackingjob():
     setup()
-    #ML_move()
-    #for i in range(servoV, 100 + 1, 1):
-    #      servoVWrite(i)
-    #      time.sleep(0.001)
-    #time.sleep(0.5)
-    #move_panel()
-    #threading.Thread(target=lambda: every(20,move_panel)).start()
+    threading.Thread(target=lambda: every(20,move_panel)).start()
+    signal.signal(signal.SIGINT, destroy)
+	
+def run_MLjob():
+    setup()
     threading.Thread(target=lambda: every(20,ML_move)).start()
+    signal.signal(signal.SIGINT, destroy)

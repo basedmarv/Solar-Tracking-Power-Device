@@ -4,15 +4,17 @@ import pandas as pd
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
 import datetime
+from dbms_connection import * 
 
 def getAngle(angle):
     # Importing the dataset
-    data = pd.read_csv(r"FakeDataSet.csv")
+    filename = extract_data() 
+    data = pd.read_csv(r"%s" % filename)
     data.head()
     
-    data = data[["Time", angle]]
+    data = data[["time", angle]]
     
-    x = np.array(data[["Time"]])
+    x = np.array(data[["time"]])
     y = np.array(data[[angle]])
     
     poly_reg = PolynomialFeatures(degree=3)
@@ -38,5 +40,3 @@ def getAngle(angle):
     print("Estimated angle:", estimatedAngle)
     
     return estimatedAngle
-
-#getAngle("latitude")
